@@ -3,7 +3,7 @@
     return a.nome.localeCompare(b.nome, "pt-BR");
   });
   var state = { q: "", lado: "", cat: "", ano: "" };
-  var LADO = { bolsonaro: "Bolsonaro", lula: "Lula" };
+  var SELO = { bolsonaro: "▼ Bolsonarista", lula: "▲ Com Lula" };
 
   var $ = function (id) { return document.getElementById(id); };
   var grid = $("grid");
@@ -24,34 +24,52 @@
     return ((p[0] || "")[0] || "") + ((p.length > 1 ? p[p.length - 1][0] : "") || "");
   }
 
-  // Foto vem da Wikipédia (pt) no navegador de quem visita; se falhar, ficam as iniciais.
-  var photoCache = {};
+  // ── Fotos: Wikipédia (pt), buscadas no navegador de quem visita ──
+  var API = "https://pt.wikipedia.org";
+  var cache = {};
+
+  function getJSON(url) {
+    return fetch(url, { headers: { Accept: "application/json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
+  }
+
+  function okSummary(j) {
+    if (!j || j.type === "disambiguation" || !j.thumbnail) return null;
+    // evita homônimos: o verbete precisa falar de algo brasileiro
+    if (!/brasil/i.test((j.description || "") + " " + (j.extract || ""))) return null;
+    return j.thumbnail.source;
+  }
+
+  function summary(title) {
+    return getJSON(API + "/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_"))).then(okSummary);
+  }
+
+  // 1) verbete pelo título; 2) busca na Wikipédia e tenta os 3 primeiros resultados
+  function findPhoto(a) {
+    var first = a.wiki || a.nome;
+    return summary(first).then(function (src) {
+      if (src) return src;
+      var q = a.nome.replace(/\(.*?\)/g, "").replace(/&/g, " ").trim();
+      return getJSON(API + "/w/rest.php/v1/search/title?limit=3&q=" + encodeURIComponent(q)).then(function (j) {
+        var pages = (j && j.pages) || [];
+        return pages.reduce(function (p, pg) {
+          return p.then(function (found) { return found || summary(pg.key || pg.title); });
+        }, Promise.resolve(null));
+      });
+    });
+  }
+
   function loadPhoto(a, box) {
-    var title = a.wiki || a.nome;
-    if (!photoCache[title]) {
-      photoCache[title] = fetch("https://pt.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_")), { headers: { Accept: "application/json" } })
-        .then(function (r) { return r.ok ? r.json() : null; })
-        .then(function (j) {
-          if (!j || j.type === "disambiguation" || !j.thumbnail) return null;
-          // evita homônimos: o verbete precisa falar de alguém/algo brasileiro
-          if (!/brasil/i.test((j.description || "") + " " + (j.extract || ""))) return null;
-          return { src: j.thumbnail.source, page: j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page };
-        })
-        .catch(function () { return null; });
-    }
-    photoCache[title].then(function (p) {
-      if (!p) return;
+    var key = a.wiki || a.nome;
+    if (!cache[key]) cache[key] = findPhoto(a);
+    cache[key].then(function (src) {
+      if (!src) return;
       var img = new Image();
       img.alt = "Foto de " + a.nome;
-      img.loading = "lazy";
       img.referrerPolicy = "no-referrer";
-      img.onload = function () {
-        box.textContent = "";
-        box.appendChild(img);
-        box.classList.add("has-photo");
-        if (p.page) box.title = "Foto: Wikipédia";
-      };
-      img.src = p.src;
+      img.onload = function () { box.appendChild(img); box.classList.add("has-photo"); };
+      img.src = src;
     });
   }
 
@@ -59,27 +77,27 @@
     es.forEach(function (e) {
       if (e.isIntersecting) { io.unobserve(e.target); loadPhoto(e.target._a, e.target); }
     });
-  }, { rootMargin: "200px" }) : null;
+  }, { rootMargin: "300px" }) : null;
 
+  // ── Cards ──
   function card(a) {
     var c = el("article", "card " + a.lado);
-    var head = el("div", "head");
-    var av = el("div", "avatar", initials(a.nome).toUpperCase());
-    av.setAttribute("aria-hidden", "true");
-    av._a = a;
-    if (io) io.observe(av); else loadPhoto(a, av);
-    head.appendChild(av);
-    head.appendChild(el("h3", null, a.nome));
-    c.appendChild(head);
 
+    var ph = el("div", "ph");
+    ph.appendChild(el("span", "ini", initials(a.nome).toUpperCase()));
+    ph.appendChild(el("span", "seal", SELO[a.lado]));
+    ph.appendChild(el("h3", null, a.nome));
+    ph._a = a;
+    if (io) io.observe(ph); else loadPhoto(a, ph);
+    c.appendChild(ph);
+
+    var body = el("div", "body");
     var meta = el("div", "meta");
-    meta.appendChild(el("span", "tag side-" + a.lado, "Apoia " + LADO[a.lado]));
     meta.appendChild(el("span", "tag", a.categoria));
     meta.appendChild(el("span", "tag", a.periodo.join(" · ")));
-    c.appendChild(meta);
-
-    c.appendChild(el("p", null, a.resumo));
-    if (a.nota) c.appendChild(el("p", "nota", "Ressalva: " + a.nota));
+    body.appendChild(meta);
+    body.appendChild(el("p", null, a.resumo));
+    if (a.nota) body.appendChild(el("p", "nota", "Ressalva: " + a.nota));
 
     var ul = el("ul", "src");
     a.fontes.forEach(function (f) {
@@ -92,7 +110,8 @@
       li.appendChild(el("span", null, " — " + f.veiculo));
       ul.appendChild(li);
     });
-    c.appendChild(ul);
+    body.appendChild(ul);
+    c.appendChild(body);
     return c;
   }
 
@@ -112,18 +131,16 @@
 
   function stats() {
     var b = data.filter(function (a) { return a.lado === "bolsonaro"; }).length;
-    var l = data.length - b;
     var box = $("stats");
-    [["", data.length, "no catálogo"], ["b", b, "com Bolsonaro"], ["l", l, "com Lula"]].forEach(function (s) {
+    [["", data.length, "no catálogo"], ["neg", b, "com Bolsonaro"], ["pos", data.length - b, "com Lula"]].forEach(function (s) {
       var d = el("div", "stat " + s[0]);
       d.appendChild(el("b", null, String(s[1])));
-      d.appendChild(document.createTextNode(s[2]));
+      d.appendChild(el("span", null, s[2]));
       box.appendChild(d);
     });
   }
 
-  var cats = Array.from(new Set(data.map(function (a) { return a.categoria; }))).sort();
-  cats.forEach(function (c) {
+  Array.from(new Set(data.map(function (a) { return a.categoria; }))).sort().forEach(function (c) {
     var o = el("option", null, c);
     o.value = c;
     $("cat").appendChild(o);

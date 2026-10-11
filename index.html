@@ -5,13 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Meu artista é Bolsonarista?</title>
 <meta name="description" content="Catálogo de artistas e celebridades brasileiras que declararam publicamente apoio a Bolsonaro ou a Lula, com link para a reportagem que comprova.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="hero">
+  <span class="ghost g22" aria-hidden="true">22</span>
+  <span class="ghost g13" aria-hidden="true">13</span>
   <div class="wrap">
-    <h1>Meu artista é <span class="b">Bolsonarista</span>?</h1>
-    <p class="sub">Catálogo de artistas e celebridades brasileiras que <strong>declararam publicamente</strong> apoio a Bolsonaro ou a Lula — cada registro com a reportagem que sustenta.</p>
+    <p class="eyebrow">Catálogo · apoios declarados · 2018–2026</p>
+    <h1>Meu artista é <span class="q">Bolsonarista?</span></h1>
+    <p class="sub">Artistas e celebridades brasileiras que declararam apoio a Bolsonaro ou a Lula, cada um com a reportagem que comprova.</p>
     <div class="stats" id="stats" aria-live="polite"></div>
   </div>
 </header>
@@ -21,8 +27,8 @@
     <input id="q" type="search" placeholder="Buscar artista…" aria-label="Buscar artista">
     <div class="seg" role="group" aria-label="Lado">
       <button data-lado="" class="on">Todos</button>
-      <button data-lado="bolsonaro">Bolsonaro</button>
-      <button data-lado="lula">Lula</button>
+      <button data-lado="bolsonaro">▼ Bolsonaro</button>
+      <button data-lado="lula">▲ Lula</button>
     </div>
     <select id="cat" aria-label="Categoria"><option value="">Todas as categorias</option></select>
     <select id="ano" aria-label="Eleição">
@@ -42,7 +48,7 @@
     <ul>
       <li><strong>Só entra apoio público e declarado</strong> (post, vídeo, show, evento de campanha) noticiado pela imprensa. Planilhas e listas vazadas sem verificação não valem. Quando o apoio é inferido (presença em ato, participação em clipe) ou só aparece em lista da imprensa, o registro traz uma ressalva.</li>
       <li>O apoio refere-se à eleição indicada. <strong>Pessoas mudam de opinião</strong> — o catálogo não afirma a posição atual de ninguém.</li>
-      <li>Apoiar um candidato não diz nada sobre o valor da obra do artista; o objetivo é só informar.</li>
+      <li>Os textos descrevem só o que foi declarado e noticiado. O destaque negativo ao apoio a Bolsonaro é visual e editorial, e não uma afirmação sobre a pessoa além do apoio registrado.</li>
       <li>Fotos vêm da Wikipédia (licenças livres, autoria nas páginas de origem). Quando não há foto confiável, aparecem as iniciais.</li>
       <li>Registros marcados com <em>Ressalva</em> mostram quando o nome aparece só em listas da imprensa, sem declaração individual localizada.</li>
       <li>O catálogo <strong>não é exaustivo</strong>. Muitos artistas não declararam voto, e outros não foram localizados.</li>
@@ -53,7 +59,7 @@
 </main>
 
 <footer class="wrap foot">
-  <p>Projeto independente, sem vínculo partidário. Conteúdo de terceiros pertence aos respectivos veículos.</p>
+  <p>Projeto editorial independente. Os dados e textos são factuais e vêm da imprensa; o tratamento visual (vermelho para o apoio a Bolsonaro, verde-água para Lula) é uma escolha editorial do autor. Conteúdo de terceiros pertence aos respectivos veículos.</p>
 </footer>
 
 <script src="data.js"></script>

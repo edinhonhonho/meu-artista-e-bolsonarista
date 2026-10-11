@@ -1,64 +1,90 @@
+/* Layout: palco escuro no topo, grade de "fichas" com foto grande.
+   Bolsonaro = tratamento negativo (vermelho, foto em P&B, selo ▼). Lula = verde-água, foto colorida, selo ▲. */
 :root{
-  --bg:#f6f5f1; --card:#fff; --text:#1c1c1e; --muted:#5f6368; --line:#e3e1da;
-  --b:#2e7d32; --b-bg:#e6f2e7;   /* Bolsonaro: verde */
-  --l:#c62828; --l-bg:#fbe9e9;   /* Lula: vermelho */
-  --accent:#1c1c1e;
+  --bg:#eceef3; --surface:#ffffff; --ink:#12131a; --muted:#5a6072; --line:#d8dbe4;
+  --neg:#c8202f; --neg-bg:#fde8ea; --pos:#0b7d6b; --pos-bg:#dff4ef;
+  --stage:#0c0d12; --stage-ink:#f4f5f8; --stage-muted:#a3a9ba;
+  --f-display:"Anton","Oswald","Arial Narrow",Impact,sans-serif;
+  --f-body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#131314; --card:#1d1d1f; --text:#ececec; --muted:#a0a3a8; --line:#2f2f33;
-    --b:#7bc67e; --b-bg:#1d2e1e;
-    --l:#ef8a8a; --l-bg:#341c1c;
-    --accent:#ececec;
-  }
-}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#08090c; --surface:#14161d; --ink:#eef0f5; --muted:#9aa0b0; --line:#262a35;
+  --neg:#ff5d68; --neg-bg:#2b1317; --pos:#3fd6b6; --pos-bg:#0f2a25; --stage:#050608;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#08090c; --surface:#14161d; --ink:#eef0f5; --muted:#9aa0b0; --line:#262a35;
+  --neg:#ff5d68; --neg-bg:#2b1317; --pos:#3fd6b6; --pos-bg:#0f2a25; --stage:#050608;
+  color-scheme:dark}
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
-.hero{padding:40px 0 24px;border-bottom:1px solid var(--line)}
-h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1;margin:0 0 8px;letter-spacing:-.02em}
-h1 .b{color:var(--b)}
-.sub{color:var(--muted);max-width:640px;margin:0 0 20px}
-.stats{display:flex;gap:10px;flex-wrap:wrap}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:.9rem}
-.stat b{font-size:1.3rem;display:block;line-height:1.1}
-.stat.b b{color:var(--b)} .stat.l b{color:var(--l)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--f-body)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--pos);outline-offset:2px}
 
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 8px}
-input,select,.seg button{font:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
-input{flex:1 1 200px}
+/* ───── Palco (hero) ───── */
+.hero{position:relative;overflow:hidden;background:var(--stage);color:var(--stage-ink);padding-block:56px 40px;
+  background-image:radial-gradient(60% 90% at 8% 0%,rgba(255,70,85,.30),transparent 60%),radial-gradient(55% 90% at 100% 100%,rgba(40,210,180,.22),transparent 60%)}
+.ghost{position:absolute;font-family:var(--f-display);line-height:.8;letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.10);pointer-events:none;user-select:none}
+.ghost.g22{font-size:clamp(9rem,26vw,20rem);right:-1%;top:-6%}
+.ghost.g13{font-size:clamp(7rem,18vw,14rem);left:42%;bottom:-14%;-webkit-text-stroke-color:rgba(63,214,182,.16)}
+.hero .wrap{position:relative}
+.eyebrow{font:500 .78rem var(--f-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--stage-muted);margin:0 0 12px}
+h1{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;line-height:.92;font-size:clamp(2.4rem,9vw,6.4rem);letter-spacing:.005em;text-wrap:balance}
+h1 .q{display:block;color:#ff5d68}
+.sub{max-width:560px;color:var(--stage-muted);margin:18px 0 28px;font-size:1.05rem}
+.stats{display:flex;flex-wrap:wrap;gap:12px}
+.stat{min-width:132px;padding:12px 16px;border:1px solid rgba(255,255,255,.14);border-radius:6px;background:rgba(255,255,255,.04);backdrop-filter:blur(4px)}
+.stat b{display:block;font:400 2.4rem/1 var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font:500 .72rem var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--stage-muted)}
+.stat.neg b{color:#ff5d68} .stat.pos b{color:#3fd6b6}
+
+/* ───── Filtros ───── */
+.controls{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-block:12px;background:var(--bg);border-bottom:1px solid var(--line)}
+input,select,.seg button{font:inherit;font-size:.92rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:9px 12px}
+input{flex:1 1 200px;min-width:0}
 .seg{display:flex}
-.seg button{border-radius:0;cursor:pointer}
-.seg button:first-child{border-radius:8px 0 0 8px}
-.seg button:last-child{border-radius:0 8px 8px 0}
+.seg button{cursor:pointer;border-radius:0;font-weight:600}
+.seg button:first-child{border-radius:6px 0 0 6px} .seg button:last-child{border-radius:0 6px 6px 0}
 .seg button+button{border-left:0}
-.seg button.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.seg button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg button[data-lado=bolsonaro].on{background:var(--neg);border-color:var(--neg);color:#fff}
+.seg button[data-lado=lula].on{background:var(--pos);border-color:var(--pos);color:#fff}
+.count{font:500 .78rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:20px 0 14px}
 
-.count{color:var(--muted);font-size:.9rem;margin:8px 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
-.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
-.card.bolsonaro{border-left-color:var(--b)} .card.lula{border-left-color:var(--l)}
-.card h3{margin:0;font-size:1.15rem}
-.meta{display:flex;gap:6px;flex-wrap:wrap;font-size:.78rem}
-.tag{padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
-.tag.side-bolsonaro{background:var(--b-bg);color:var(--b);border-color:transparent;font-weight:600}
-.tag.side-lula{background:var(--l-bg);color:var(--l);border-color:transparent;font-weight:600}
-.card p{margin:0;font-size:.95rem}
-.nota{font-size:.85rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
-.src{margin:auto 0 0;padding:8px 0 0;list-style:none;font-size:.85rem;border-top:1px solid var(--line)}
-.src li+li{margin-top:4px}
-.src a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+/* ───── Fichas ───── */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.card{display:flex;flex-direction:column;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px -14px rgba(0,0,0,.45)}
+.card.bolsonaro{border-color:var(--neg)} .card.lula{border-color:var(--pos)}
+
+.ph{position:relative;aspect-ratio:4/5;display:grid;place-items:center;overflow:hidden;background:linear-gradient(160deg,var(--line),var(--surface))}
+.ph .ini{font:400 clamp(3rem,10vw,4.6rem)/1 var(--f-display);color:var(--muted);opacity:.55;letter-spacing:.02em}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 20%}
+.card.bolsonaro .ph img{filter:grayscale(1) contrast(1.1) brightness(.85)}
+.card.bolsonaro .ph::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(200,32,47,.28),rgba(120,10,20,.55));mix-blend-mode:multiply;pointer-events:none}
+.ph::after{content:"";position:absolute;inset:auto 0 0 0;height:60%;z-index:1;background:linear-gradient(transparent,rgba(5,6,8,.88));pointer-events:none}
+.seal{position:absolute;top:10px;left:10px;z-index:2;padding:4px 9px;border-radius:3px;font:700 .68rem var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:#fff}
+.bolsonaro .seal{background:var(--neg)} .lula .seal{background:var(--pos)}
+.card h3{position:absolute;left:12px;right:12px;bottom:10px;z-index:2;margin:0;font:400 1.7rem/1 var(--f-display);text-transform:uppercase;color:#fff;letter-spacing:.01em;text-wrap:balance}
+
+.body{display:flex;flex-direction:column;gap:10px;padding:14px;flex:1}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:2px 8px;border-radius:3px;border:1px solid var(--line);font:500 .68rem var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.body p{margin:0;font-size:.92rem}
+.nota{padding:8px 10px;border-radius:4px;font-size:.82rem!important;color:var(--muted);background:var(--bg)}
+.bolsonaro .nota{border-left:3px solid var(--neg)} .lula .nota{border-left:3px solid var(--pos)}
+.src{margin:auto 0 0;padding:10px 0 0;list-style:none;font-size:.82rem;border-top:1px solid var(--line)}
+.src li+li{margin-top:5px}
+.src a{text-underline-offset:2px;text-decoration-thickness:1px}
+.bolsonaro .src a:hover{color:var(--neg)} .lula .src a:hover{color:var(--pos)}
 .src span{color:var(--muted)}
-.empty{text-align:center;color:var(--muted);padding:40px 0}
+.empty{text-align:center;color:var(--muted);padding:56px 0}
 
-.about{margin:48px 0 24px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
-.about h2{margin-top:0}
-.about li{margin:6px 0}
-.foot{color:var(--muted);font-size:.85rem;padding-bottom:32px}
-
-.head{display:flex;align-items:center;gap:12px}
-.head h3{min-width:0}
-.avatar{flex:none;width:56px;height:56px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-weight:700;font-size:1.05rem;letter-spacing:.02em;color:var(--muted);background:var(--bg);border:2px solid var(--line)}
-.card.bolsonaro .avatar{border-color:var(--b)} .card.lula .avatar{border-color:var(--l)}
-.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+/* ───── Sobre ───── */
+.about{margin:56px 0 24px;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.about h2{margin:0 0 8px;font:400 1.8rem var(--f-display);text-transform:uppercase}
+.about li{margin:7px 0;max-width:72ch}
+.foot{color:var(--muted);font-size:.85rem;padding-block:8px 40px}
+@media (prefers-reduced-motion:reduce){.card{transition:none}.card:hover{transform:none}}
