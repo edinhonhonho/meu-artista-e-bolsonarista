@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: Baixar fotos da Wikipédia
+        run: python3 scripts/baixar_fotos.py
+        continue-on-error: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

@@ -60,9 +60,21 @@
     });
   }
 
+  function slug(n) {
+    return n.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  }
+
+  // Fotos já baixadas (fotos/manifest.json, criado por scripts/baixar_fotos.py) têm prioridade.
+  var manifest = fetch("fotos/manifest.json").then(function (r) { return r.ok ? r.json() : {}; }).catch(function () { return {}; });
+
   function loadPhoto(a, box) {
     var key = a.wiki || a.nome;
-    if (!cache[key]) cache[key] = findPhoto(a);
+    if (!cache[key]) {
+      cache[key] = manifest.then(function (m) {
+        var e = m[slug(a.nome)];
+        return e ? "fotos/" + e.file : findPhoto(a);
+      });
+    }
     cache[key].then(function (src) {
       if (!src) return;
       var img = new Image();
@@ -83,19 +95,19 @@
   function card(a) {
     var c = el("article", "card " + a.lado);
 
-    var ph = el("div", "ph");
-    ph.appendChild(el("span", "ini", initials(a.nome).toUpperCase()));
-    ph.appendChild(el("span", "seal", SELO[a.lado]));
-    ph.appendChild(el("h3", null, a.nome));
+    var ph = el("div", "ph", initials(a.nome).toUpperCase());
+    ph.setAttribute("aria-hidden", "true");
     ph._a = a;
     if (io) io.observe(ph); else loadPhoto(a, ph);
     c.appendChild(ph);
 
+    var id = el("div", "id");
+    id.appendChild(el("span", "seal", SELO[a.lado]));
+    id.appendChild(el("h3", null, a.nome));
+    id.appendChild(el("div", "meta", a.categoria + " · " + a.periodo.join(", ")));
+    c.appendChild(id);
+
     var body = el("div", "body");
-    var meta = el("div", "meta");
-    meta.appendChild(el("span", "tag", a.categoria));
-    meta.appendChild(el("span", "tag", a.periodo.join(" · ")));
-    body.appendChild(meta);
     body.appendChild(el("p", null, a.resumo));
     if (a.nota) body.appendChild(el("p", "nota", "Ressalva: " + a.nota));
 

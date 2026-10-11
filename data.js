@@ -540,3 +540,55 @@ window.ARTISTAS = [
   };
   window.ARTISTAS.forEach(function (a) { if (!a.wiki && W[a.nome]) a.wiki = W[a.nome]; });
 })();
+
+// ───────────── Lista "Mais de 130 celebridades já declararam voto em Lula" (Vermelho, 22/09/2022) ─────────────
+// Nomes extraídos da lista por busca (a página não pôde ser aberta diretamente). A matéria diz incluir só quem tornou público o próprio voto.
+(function () {
+  var SRC = { titulo: "Mais de 130 celebridades já declararam voto em Lula; veja a lista", url: "https://vermelho.org.br/2022/09/22/mais-de-130-celebridades-ja-declararam-voto-em-lula-veja-a-lista/", veiculo: "Vermelho" };
+  var NOTA = "Nome extraído da lista do Vermelho (veículo alinhado à esquerda); não localizamos a declaração individual.";
+  var M = "Música", T = "Teatro, TV e Cinema", E = "Esporte", I = "Influenciadores", O = "Outros";
+  var list = [
+    ["Antonio Grassi", T], ["Antônio Pitanga", T], ["Arnaldo Antunes", M], ["Astrid Fontenelle", T],
+    ["Bemvindo Sequeira", O], ["Beto Bruno", O], ["Bruno Garcia", T],
+    ["Caco Ciocler", T], ["Camila Morgado", T], ["Carlinhos Brown", M], ["Chico Pinheiro", M],
+    ["Dadi Carvalho", O], ["Dado Villa-Lobos", M], ["Daniel Ganjaman", M], ["Deborah Evelyn", T], ["Denise Fraga", T],
+    ["Deolane Bezerra", I], ["Diogo Nogueira", M], ["Dira Paes", T], ["Djonga", M], ["Drica Moraes", T],
+    ["Elisa Lucinda", T], ["Emicida", M], ["Evandro Mesquita", M],
+    ["Fabio Porchat", T], ["Flor Gil", M], ["Francis Hime", M], ["Fred Zero Quatro", M],
+    ["Gal Costa", M], ["Gilsons", M], ["Giovanna Ewbank", T], ["Humberto Carrão", T],
+    ["Ilana Sales", O], ["Irandhir Santos", T],
+    ["Jesuíta Barbosa", T], ["João Gordo", M], ["João Vicente de Castro", T], ["JP Demasi", O], ["Ju de Paula", T],
+    ["Juca Kfouri", O], ["Juliana Alves", T],
+    ["Karim Aïnouz", T], ["Lavínia", O], ["Leandra Leal", T], ["Leci Brandão", M], ["Letícia Sabatella", T],
+    ["Luciana Worms", O], ["Luísa Mell", I],
+    ["Maitê Proença", T], ["Majur", M], ["Manu Gavassi", M], ["Marcelo Faria", T], ["Marcelo Serrado", T],
+    ["Margareth Menezes", M], ["Maria Bopp", T], ["Marina Person", T], ["Marina Ribeiro", T],
+    ["Mateo (Francisco, el Hombre)", M], ["Maurício Barros", M], ["Mônica Martelli", T],
+    ["Nando Reis", M], ["Natália Lage", T], ["Odair José", M], ["Olivia Hime", M], ["Osmar Prado", T],
+    ["Paulo Vieira", T], ["Pepita", O], ["Pequena Lo", M],
+    ["Raí", E], ["Rogeria Holtz", O], ["Rosemberg Cariry", T], ["Russo Passapusso", M],
+    ["Sérgio Loroza", T], ["Siba Veloso", M], ["Silvero Pereira", T],
+    ["Tata Amaral", T], ["Tati Quebra Barraco", M], ["Tico Santa Cruz", M], ["Toni Venturi", T], ["Tony Bellotto", M],
+    ["Valesca Popozuda", M], ["Vanderlei Luxemburgo", E], ["Vanessa da Mata", M],
+    ["Zélia Duncan", M], ["Zezé Polessa", T]
+  ];
+  // Quem já estava no catálogo (nomes como aparecem na lista) ganha a fonte; os demais são criados.
+  var ja = ["Alinne Moraes", "Anitta", "Bela Gil", "Bianca Andrade", "Bruna Marquezine", "Bruno Gagliasso", "Caetano Veloso", "Camila Pitanga", "Casagrande", "Chico Buarque", "Chico César", "Cissa Guimarães", "Cláudia Abreu", "Daniela Mercury", "Djavan", "Duda Beat", "Fernanda Montenegro", "Felipe Neto", "Gil do Vigor", "Gilberto Gil", "Gloria Groove", "Gregorio Duvivier", "José de Abreu", "Juliette", "Juninho Pernambucano", "Kleber Mendonça Filho", "Lenine", "Ludmilla", "Luisa Sonza", "Malu Mader", "Marcelo Adnet", "Maria Bethânia", "Maria Rita", "Marieta Severo", "Marina Sena", "Marisa Monte", "Mart'nália", "Martinho da Vila", "Otto", "Pabllo Vittar", "Paola Carosella", "Paolla Oliveira", "Paulo Betti", "Paulo Miklos", "Teresa Cristina", "Wagner Moura", "Zeca Pagodinho"];
+  function n(s) { return s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[’']/g, "'").toLowerCase().trim(); }
+  var idx = {};
+  window.ARTISTAS.forEach(function (a) { idx[n(a.nome)] = a; });
+  ja.forEach(function (nome) {
+    var a = idx[n(nome)];
+    if (!a) { console.warn("não encontrado no catálogo:", nome); return; }
+    if (!a.fontes.some(function (f) { return f.url === SRC.url; })) a.fontes.push(SRC);
+    if (a.periodo.indexOf(2022) === -1) { a.periodo.push(2022); a.periodo.sort(); }
+  });
+  list.forEach(function (r) {
+    if (idx[n(r[0])]) return;
+    window.ARTISTAS.push({
+      nome: r[0], categoria: r[1], lado: "lula", periodo: [2022],
+      resumo: "Consta na lista de celebridades que tornaram público o voto em Lula antes do primeiro turno de 2022.",
+      fontes: [SRC], nota: NOTA
+    });
+  });
+})();
