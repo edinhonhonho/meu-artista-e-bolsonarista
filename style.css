@@ -1,0 +1,58 @@
+:root{
+  --bg:#f6f5f1; --card:#fff; --text:#1c1c1e; --muted:#5f6368; --line:#e3e1da;
+  --b:#2e7d32; --b-bg:#e6f2e7;   /* Bolsonaro: verde */
+  --l:#c62828; --l-bg:#fbe9e9;   /* Lula: vermelho */
+  --accent:#1c1c1e;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#131314; --card:#1d1d1f; --text:#ececec; --muted:#a0a3a8; --line:#2f2f33;
+    --b:#7bc67e; --b-bg:#1d2e1e;
+    --l:#ef8a8a; --l-bg:#341c1c;
+    --accent:#ececec;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+.hero{padding:40px 0 24px;border-bottom:1px solid var(--line)}
+h1{font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.1;margin:0 0 8px;letter-spacing:-.02em}
+h1 .b{color:var(--b)}
+.sub{color:var(--muted);max-width:640px;margin:0 0 20px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:.9rem}
+.stat b{font-size:1.3rem;display:block;line-height:1.1}
+.stat.b b{color:var(--b)} .stat.l b{color:var(--l)}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 8px}
+input,select,.seg button{font:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+input{flex:1 1 200px}
+.seg{display:flex}
+.seg button{border-radius:0;cursor:pointer}
+.seg button:first-child{border-radius:8px 0 0 8px}
+.seg button:last-child{border-radius:0 8px 8px 0}
+.seg button+button{border-left:0}
+.seg button.on{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.count{color:var(--muted);font-size:.9rem;margin:8px 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card.bolsonaro{border-left-color:var(--b)} .card.lula{border-left-color:var(--l)}
+.card h3{margin:0;font-size:1.15rem}
+.meta{display:flex;gap:6px;flex-wrap:wrap;font-size:.78rem}
+.tag{padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.tag.side-bolsonaro{background:var(--b-bg);color:var(--b);border-color:transparent;font-weight:600}
+.tag.side-lula{background:var(--l-bg);color:var(--l);border-color:transparent;font-weight:600}
+.card p{margin:0;font-size:.95rem}
+.nota{font-size:.85rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.src{margin:auto 0 0;padding:8px 0 0;list-style:none;font-size:.85rem;border-top:1px solid var(--line)}
+.src li+li{margin-top:4px}
+.src a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.src span{color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+
+.about{margin:48px 0 24px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.about h2{margin-top:0}
+.about li{margin:6px 0}
+.foot{color:var(--muted);font-size:.85rem;padding-bottom:32px}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu artista é Bolsonarista?</title>
+<meta name="description" content="Catálogo de artistas e celebridades brasileiras que declararam publicamente apoio a Bolsonaro ou a Lula, com link para a reportagem que comprova.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>Meu artista é <span class="b">Bolsonarista</span>?</h1>
+    <p class="sub">Catálogo de artistas e celebridades brasileiras que <strong>declararam publicamente</strong> apoio a Bolsonaro ou a Lula — cada registro com a reportagem que sustenta.</p>
+    <div class="stats" id="stats" aria-live="polite"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="controls" aria-label="Filtros">
+    <input id="q" type="search" placeholder="Buscar artista…" aria-label="Buscar artista">
+    <div class="seg" role="group" aria-label="Lado">
+      <button data-lado="" class="on">Todos</button>
+      <button data-lado="bolsonaro">Bolsonaro</button>
+      <button data-lado="lula">Lula</button>
+    </div>
+    <select id="cat" aria-label="Categoria"><option value="">Todas as categorias</option></select>
+    <select id="ano" aria-label="Eleição">
+      <option value="">Todas as eleições</option>
+      <option value="2018">2018</option>
+      <option value="2022">2022</option>
+      <option value="2026">2026</option>
+    </select>
+  </section>
+
+  <p id="count" class="count"></p>
+  <section id="grid" class="grid"></section>
+  <p id="empty" class="empty" hidden>Nenhum registro encontrado com esses filtros.</p>
+
+  <section class="about" id="metodo">
+    <h2>Como funciona</h2>
+    <ul>
+      <li><strong>Só entra apoio público e declarado</strong> (post, vídeo, show, evento de campanha) noticiado pela imprensa. Nada de boatos, "dizem que" ou inferências.</li>
+      <li>O apoio refere-se à eleição indicada. <strong>Pessoas mudam de opinião</strong> — o catálogo não afirma a posição atual de ninguém.</li>
+      <li>Apoiar um candidato não diz nada sobre o valor da obra do artista; o objetivo é só informar.</li>
+      <li>O catálogo <strong>não é exaustivo</strong>. Muitos artistas não declararam voto, e outros não foram localizados.</li>
+      <li>Os resumos são paráfrases das reportagens; as aspas são trechos citados por elas. Confira sempre a fonte.</li>
+      <li>Encontrou erro, ou quer incluir/remover alguém? Abra uma <em>issue</em> ou <em>pull request</em> no repositório, com link da reportagem. Pedidos de correção com fonte são atendidos.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>Projeto independente, sem vínculo partidário. Conteúdo de terceiros pertence aos respectivos veículos.</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
