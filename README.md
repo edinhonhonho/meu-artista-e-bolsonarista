@@ -16,7 +16,7 @@ Site estático (HTML + CSS + JS puro, sem build). Abra `index.html` no navegador
 
 - A compilação inicial foi feita por busca na web; **as fontes foram localizadas pelos resultados de busca (título, trecho e link), não abertas uma a uma** — o ambiente de coleta não conseguiu abrir as páginas. Revise a fonte antes de tomar um registro como definitivo e corrija o que estiver errado.
 - Alguns portais exibiam datas inconsistentes; quando a data de uma reportagem é incerta, isso consta na nota.
-- Lista **não exaustiva**: há mais nomes (esporte, humor, TV, influenciadores) a levantar. Apoio a Flávio Bolsonaro em 2026 ainda não foi mapeado de forma sistemática — contribuições bem-vindas.
+- Lista **não exaustiva**: faltam nomes (esporte, humor, TV, influenciadores). Apoio a Flávio Bolsonaro em 2026 foi mapeado de forma parcial — contribuições bem-vindas.
 
 ## Como contribuir
 
@@ -35,3 +35,7 @@ Edite `data.js` e abra um pull request, ou abra uma issue. Formato:
 ```
 
 Pedidos de correção ou remoção por erro factual, com fonte, são atendidos.
+
+## Fotos
+
+As fotos são buscadas na Wikipédia (API pública) pelo navegador de quem visita o site; se não houver foto ou o verbete não for de uma pessoa/grupo brasileiro, aparecem as iniciais. Para forçar o verbete certo de um homônimo, use o campo opcional `wiki` (título do verbete na Wikipédia pt). Os créditos de cada imagem estão na página de origem na Wikipédia.

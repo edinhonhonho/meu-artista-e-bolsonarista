@@ -19,9 +19,58 @@
     return e;
   }
 
+  function initials(n) {
+    var p = n.replace(/\(.*?\)/g, "").replace(/&/g, " ").trim().split(/\s+/);
+    return ((p[0] || "")[0] || "") + ((p.length > 1 ? p[p.length - 1][0] : "") || "");
+  }
+
+  // Foto vem da Wikipédia (pt) no navegador de quem visita; se falhar, ficam as iniciais.
+  var photoCache = {};
+  function loadPhoto(a, box) {
+    var title = a.wiki || a.nome;
+    if (!photoCache[title]) {
+      photoCache[title] = fetch("https://pt.wikipedia.org/api/rest_v1/page/summary/" + encodeURIComponent(title.replace(/ /g, "_")), { headers: { Accept: "application/json" } })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          if (!j || j.type === "disambiguation" || !j.thumbnail) return null;
+          // evita homônimos: o verbete precisa falar de alguém/algo brasileiro
+          if (!/brasil/i.test((j.description || "") + " " + (j.extract || ""))) return null;
+          return { src: j.thumbnail.source, page: j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page };
+        })
+        .catch(function () { return null; });
+    }
+    photoCache[title].then(function (p) {
+      if (!p) return;
+      var img = new Image();
+      img.alt = "Foto de " + a.nome;
+      img.loading = "lazy";
+      img.referrerPolicy = "no-referrer";
+      img.onload = function () {
+        box.textContent = "";
+        box.appendChild(img);
+        box.classList.add("has-photo");
+        if (p.page) box.title = "Foto: Wikipédia";
+      };
+      img.src = p.src;
+    });
+  }
+
+  var io = "IntersectionObserver" in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) {
+      if (e.isIntersecting) { io.unobserve(e.target); loadPhoto(e.target._a, e.target); }
+    });
+  }, { rootMargin: "200px" }) : null;
+
   function card(a) {
     var c = el("article", "card " + a.lado);
-    c.appendChild(el("h3", null, a.nome));
+    var head = el("div", "head");
+    var av = el("div", "avatar", initials(a.nome).toUpperCase());
+    av.setAttribute("aria-hidden", "true");
+    av._a = a;
+    if (io) io.observe(av); else loadPhoto(a, av);
+    head.appendChild(av);
+    head.appendChild(el("h3", null, a.nome));
+    c.appendChild(head);
 
     var meta = el("div", "meta");
     meta.appendChild(el("span", "tag side-" + a.lado, "Apoia " + LADO[a.lado]));

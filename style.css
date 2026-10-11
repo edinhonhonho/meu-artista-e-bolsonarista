@@ -56,3 +56,9 @@ input{flex:1 1 200px}
 .about h2{margin-top:0}
 .about li{margin:6px 0}
 .foot{color:var(--muted);font-size:.85rem;padding-bottom:32px}
+
+.head{display:flex;align-items:center;gap:12px}
+.head h3{min-width:0}
+.avatar{flex:none;width:56px;height:56px;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-weight:700;font-size:1.05rem;letter-spacing:.02em;color:var(--muted);background:var(--bg);border:2px solid var(--line)}
+.card.bolsonaro .avatar{border-color:var(--b)} .card.lula .avatar{border-color:var(--l)}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
